@@ -81,24 +81,3 @@ class Solution:
                 l+=1
         l,r=res
         return s[l:r+1] if resLen != float("infinity") else ""
-
-# Step 1. Understand the problem
-# 
-# input is two strings.
-# 
-# Return the minimum window substring such that every character in t is included in the window otherwise return the empty strinig
-# Basically my interpretation is we have to go through the string and find substrings of s that include all the letters of t.
-# The big kicker is we can include letters not in 't' to find the substring
-# We  have to find the smallest substring
-# 
-# 
-# Step 2. Examples
-# 
-# s=xeabasddfxce t=dxe->answer should be dfxce. That is the substring that includes all the letters of t. It is the shortest.
-# 
-# adblaockchatbro abo
-# 
-# Step 3. Method to solve
-# 
-# Problem is how do you take into consideration how to find the minimum substring
-# 
