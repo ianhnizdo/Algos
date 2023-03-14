@@ -5,54 +5,58 @@
  */
 var searchMatrix = function(matrix, target) {
     
-    //check rows
-    let first=0;
-    let last=matrix.length-1;
+    let first = 0;
+    let last = matrix.length-1;
     let mid = Math.floor((first+last)/2);
-    // let length=matrix[0].length;
-    // console.log(first,last);
-
+    
     while(first<=last){
-        let left=matrix[mid][0];
-        let right = matrix[mid][matrix[mid].length-1];
-        console.log(left, right);
-
-        //if the right point is less than target we move first up.
-        if(right<target){
-            first=mid+1;
+        const start=matrix[mid][0];
+        const end=matrix[mid][matrix[mid].length-1];
+        console.log(start,end)
+        if(target>end){
+            first=mid+1
             mid=Math.floor((first+last)/2);
-            }
-        //if the left point is less than target we move the last matrix row down.;
-        else if(left>target){
-            last=mid-1
+        }else if(target<start){
+            last=mid-1;
             mid=Math.floor((first+last)/2);
-            }
-        else if(left<target && target<right){
-            console.log('test,', matrix[mid])
-            const cur = matrix[mid]
-            let left2 = 0;
-            let right2=cur.length-1;
-            let mid2 = Math.floor((left+right)/2);
-            while(left2<right2){
-                console.log(left2, right2);
-                if(cur[mid2]===target || cur[left2]===target || cur[right2]===target) return true;
-                else if(cur[mid2]<target){
-                    console.log('move up left2,')
-                    left2=mid2+1;
-                    mid2=Math.floor((left+right)/2)
-                }else if(cur[mid2]>target){
-                    console.log('move up right2,');
-                    right2=mid2-1;
-                    mid2=Math.floor((left+right)/2);
-                }
-            }
-            return false;
+        }else{
+            break;
         }
-
     }
+
+    console.log(mid);
+
+    if(!matrix[mid])return false;
+
+    let row = matrix[mid]
+    let left = 0;
+    let right=row.length-1;
+    // console.log(left,right);
+
+    let mid2= Math.floor((left+right)/2)
+    while(left<=right){
+        
+        // console.log(mid[left], mid[mid2], mid[right]);
+
+        if(row[mid2]===target || row[left]===target || row[right]===target) return true;
+        else if(row[mid2]>target){
+            console.log('move down')
+            right=mid2-1;
+            mid2=Math.floor((left+right)/2);
+        }else if(row[mid2]<target){
+            // console.log('move up')
+            left=mid2+1;
+            mid2=Math.floor((left+right)/2);
+        }
+    }
+
     return false;
+
 };
 
+console.log(searchMatrix([[1,3,5,7],[10,11,16,20],[23,30,34,60]], 34))
+console.log(searchMatrix([[1]],3))
+console.log(searchMatrix([[1],[3]], 3))
 
 /*
 
@@ -74,21 +78,8 @@ Do we assume that each matrix row is the same lenght? I would assume so
 
 Step 3. Method
 
-We have a bunch of rows filled with entries
+If you flattened the rows you would have a normal binary search. All you need to do is just do a double binary search.
 
-My idea would be to loop through the matrix and check the edges
-
-if left and right are less than target move to the next matrix row
-If they are both greater we exit out and return false, the target is not there
-if left<target<right we are in the row that may contain the entry at which point we can do a binary search
-
-This would have a linear time complexity though
-
-A better way would be to grab the first and last entry and check certain values. If one entry has the condition of left<target<right we search that.
-
-Otherwise if both are greagter than gtarget we move to an earloier row, and if both are less we move to a later row. We would need to make sure this search does not have left>right
-
-We would essentially need to split our search into two binaries
-
+Find a row that has a start smaller than the target and an end greater than the target and check if you target is in that array using another binary search.
 
 */
