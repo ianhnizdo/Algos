@@ -9,22 +9,48 @@ var searchMatrix = function(matrix, target) {
     let first=0;
     let last=matrix.length-1;
     let mid = Math.floor((first+last)/2);
+    // let length=matrix[0].length;
+    // console.log(first,last);
 
-    while(first<last){
-        let left=matrix[mid[0]];
-        let right = matrix[mid[last]];
-        
+    while(first<=last){
+        let left=matrix[mid][0];
+        let right = matrix[mid][matrix[mid].length-1];
+        console.log(left, right);
+
         //if the right point is less than target we move first up.
         if(right<target){
             first=mid+1;
-             
+            mid=Math.floor((first+last)/2);
             }
         //if the left point is less than target we move the last matrix row down.;
-        if(left>target){
-            end=mid-1
-            };
+        else if(left>target){
+            last=mid-1
+            mid=Math.floor((first+last)/2);
+            }
+        else if(left<target && target<right){
+            console.log('test,', matrix[mid])
+            const cur = matrix[mid]
+            let left2 = 0;
+            let right2=cur.length-1;
+            let mid2 = Math.floor((left+right)/2);
+            while(left2<right2){
+                console.log(left2, right2);
+                if(cur[mid2]===target || cur[left2]===target || cur[right2]===target) return true;
+                else if(cur[mid2]<target){
+                    console.log('move up left2,')
+                    left2=mid2+1;
+                    mid2=Math.floor((left+right)/2)
+                }else if(cur[mid2]>target){
+                    console.log('move up right2,');
+                    right2=mid2-1;
+                    mid2=Math.floor((left+right)/2);
+                }
+            }
+            return false;
+        }
 
     }
+    return false;
 };
 
 
