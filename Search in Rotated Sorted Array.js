@@ -5,30 +5,77 @@
  */
 
 const search = function(nums, target){
-    let start =0;
-    let end = nums.length-1;
+
+    const pivot = findPivot(nums);
+
+    const value = nums[pivot];
+    console.log(value,target,pivot,nums);
+
+    let start=0;
+    let end=nums.length-1;
+
+    if(nums[start]===target) return start;
+    if(nums[end]===target) return end;
+
+    if(target<=nums[end] && target>=value){
+        console.log('left', value<target, value,target);
+        start=pivot;
+        end=nums.length-1;
+    }else if(target>=value && target>=nums[start]){
+        start=0;
+        end=pivot;
+    }
+    console.log(start, end)
+
+    while(start<end){
+        const mid = Math.floor((start+end)/2);
+        if(nums[start]===target) return start;
+        if(nums[end]===target) return end;
+        if(nums[mid]===target) return mid;
+
+        if(nums[mid]<target){
+            start=mid+1;
+        }else{
+            end=mid-1;
+        }
+    }
+    return -1;
+}
+
+const findPivot = function(arr){
+
+    let start = 0
+    let end = arr.length-1;
     let pivot;
 
-    console.log(nums[start],nums[end])
-    //find out the pivot
-    while(start<=end){
+    //perfectly sorted
+    if(arr[start]<arr[end]) return start;
+
+    while(start<end){
         const mid = Math.floor((start+end)/2);
-        console.log(nums[mid])
-        
-        if(nums[mid]>nums[end]){
-            start=mid+1
-        }else if(nums[mid]<nums[start]){
-            end=mid
+        console.log(start, mid, end);
+
+        if(arr[start]<arr[end]){
+            pivot=start;
+            break;
         }
-        start++
+
+        if(arr[mid]>=arr[start] && arr[mid]>arr[end]){
+            start=mid+1;
+            pivot = start;
+        } else if(arr[mid]<arr[end] && arr[mid]<arr[start]){
+            end=mid;
+            
+        }
     }
 
-    // console.log(pivot)
-    return pivot
+    return pivot;
 }
-console.log('yes');
 
-console.log(search([4,5,6,7,8,0,1,2], 3))
+// console.log(search([4,5,6,7,8,0,1,2,3], 8))
+// console.log(search([1],1))
+console.log(search([8,9,2,3,4], 9))
+console.log(findPivot([8,9,2,3,4]))
 // console.log(search([4,5,6,7,8,1,2,3], 8))
 
 /*
