@@ -1,5 +1,7 @@
-var TimeMap = function() {
-    const hash = new Map()
+class TimeMap{
+    constructor(){
+        this.storage = new Map();
+    };
 };
 
 /** 
@@ -10,13 +12,17 @@ var TimeMap = function() {
  */
 
 TimeMap.prototype.set = function(key, value, timestamp) {
-    const hash = this.hash;
+    console.log(this.storage)
+    const hash = this.storage;
     if(hash.has(key)){
+        // console.log('key present', hash);
         const list = hash.get(key);
         list.push([value, timestamp]);
     }else{
-        hash.set(key, [[value, timestamp]]);
+        hash.set(key, [])
+        hash.get(key).push([value,timestamp])
     }
+    console.log(this.storage);
 };
 
 /** 
@@ -26,14 +32,15 @@ TimeMap.prototype.set = function(key, value, timestamp) {
  */
 
 TimeMap.prototype.get = function(key, timestamp) {
-    const hash=this.hash;
+    // console.log(this);
+    const hash=this.storage;
     const list = hash.get(key);
     if(!list) return "";
-
+    // console.log('continue');
 
     let start = 0;
     let end = list.length-1;
-
+    
     while(start<end){
         //Find midpoint
         const mid=Math.floor((start+end)/2);
@@ -47,10 +54,27 @@ TimeMap.prototype.get = function(key, timestamp) {
         if(list[mid][1]<timestamp) start=mid+1;
         else if(list[mid][1]>timestamp) end=mid-1;
     }
-    const closer= Math.abs(timestamp-start)>Math.abs(timestamp-end) ? end : start;
+    const closer= Math.abs(timestamp-start)>=Math.abs(timestamp-end) ? end : start;
     return list[closer][0];
 };
 
 
-TimeMap();
-TimeMap.get()
+// const timestamp = new TimeMap();
+// timestamp.set('foo','bar',1)
+// timestamp.set('foo','bar',3)
+// timestamp.get('let', 1)
+// console.log(timestamp.get('foo', 1));
+// timestamp.set('foo', 'hope', 4);
+// console.log(timestamp.get('foo', 2));
+
+const test = new TimeMap();
+test.set('love', 'high', 10);
+// console.log(test);
+test.set('love','low',20);
+// console.log(test)
+
+console.log(test.get('love', 5));
+console.log(test.get('love', 10));
+console.log(test.get('love', 15));
+console.log(test.get('love', 20));
+console.log(test.get('love', 25));
