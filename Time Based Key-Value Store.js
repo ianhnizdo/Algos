@@ -35,12 +35,16 @@ TimeMap.prototype.get = function(key, timestamp) {
     // console.log(this);
     const hash=this.storage;
     const list = hash.get(key);
+    
     if(!list) return "";
+    
     // console.log('continue');
 
     let start = 0;
     let end = list.length-1;
     
+    if(timestamp<list[start][1]) return "";
+
     while(start<end){
         //Find midpoint
         const mid=Math.floor((start+end)/2);
@@ -48,13 +52,17 @@ TimeMap.prototype.get = function(key, timestamp) {
         if(end-start===1)break;
 
         if(list[mid][1]===timestamp) return list[mid][0];
+
         if(list[start][1]===timestamp) return list[start][0]
         if(list[end][1]===timestamp) return list[end][0]
 
         if(list[mid][1]<timestamp) start=mid+1;
         else if(list[mid][1]>timestamp) end=mid-1;
     }
-    const closer= Math.abs(timestamp-start)>=Math.abs(timestamp-end) ? end : start;
+
+    // console.log(timestamp,list[start][1],list[end][1], Math.abs(timestamp-list[start][1]),timestamp-list[end][1])
+    const closer = Math.abs(timestamp-list[start][1])<=Math.abs(timestamp-list[end][1]) ? start : end;
+
     return list[closer][0];
 };
 
@@ -73,8 +81,8 @@ test.set('love', 'high', 10);
 test.set('love','low',20);
 // console.log(test)
 
-console.log(test.get('love', 5));
-console.log(test.get('love', 10));
-console.log(test.get('love', 15));
-console.log(test.get('love', 20));
-console.log(test.get('love', 25));
+// console.log(test.get('love', 5));
+// console.log(test.get('love', 10));
+// console.log(test.get('love', 15));
+// console.log(test.get('love', 20));
+// console.log(test.get('love', 25));
