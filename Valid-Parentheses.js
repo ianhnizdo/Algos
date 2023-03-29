@@ -34,6 +34,10 @@ var isValid = function (s) {
   return arr.length === 0 ? true : false;
 };
 
+console.log(isValid("()"));
+console.log(isValid("()[]{}"));
+console.log(isValid("(]"));
+
 /*
 
 Step 1. Understand the Problem
