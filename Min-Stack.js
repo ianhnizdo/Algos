@@ -1,39 +1,71 @@
-class MinStack{
-    constructor(){
-        storage = new Map();
-    }
+class MinStack {
+  constructor() {
+    this.storage = new Map();
+    this.length = 0;
+    this.minArr = [];
+  }
 }
 
-/** 
+/**
  * @param {number} val
  * @return {void}
  */
-MinStack.prototype.push = function(val) {
-    
+MinStack.prototype.push = function (val) {
+  if (!typeof val === Number) return;
+  this.storage.set(this.length, val);
+  this.length++;
+  console.log(this.storage);
+
+  const arr = this.minArr;
+  if (!arr || val < arr[arr.length - 1]) {
+    arr.push(val);
+  }
 };
 
 /**
  * @return {void}
  */
-MinStack.prototype.pop = function() {
-    
+MinStack.prototype.pop = function () {
+  //base case
+  console.log("hello");
+  if (this.length === 0) return "empty map";
+  // console.log(this.storage)
+  this.storage.delete(this.length - 1);
+  //   console.log(this.storage)
+  this.length--;
+
+  const arr = this.minArr;
+  if (!this.storage.has(arr[arr.length - 1])) {
+    arr.pop();
+  }
+  return;
 };
 
 /**
  * @return {number}
  */
-MinStack.prototype.top = function() {
-    
+MinStack.prototype.top = function () {
+  const first = this.storage.get(0);
+  if (!first) return "empty stack";
+  return first;
 };
 
 /**
  * @return {number}
  */
-MinStack.prototype.getMin = function() {
-    
+MinStack.prototype.getMin = function () {
+  //That should be the smallest value
+  return this.minArr[this.minArr.length - 1];
 };
 
-/** 
+const test = new MinStack();
+test.push(-2);
+test.push(0);
+test.push(-3);
+console.log(test);
+console.log(test.getMin());
+
+/**
  * Your MinStack object will be instantiated and called as such:
  * var obj = new MinStack()
  * obj.push(val)
