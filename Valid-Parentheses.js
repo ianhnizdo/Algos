@@ -2,7 +2,37 @@
  * @param {string} s
  * @return {boolean}
  */
-var isValid = function (s) {};
+var isValid = function (s) {
+  if (!s) return false;
+
+  //fill this with opening "(", "[", and "{"
+  const arr = [];
+
+  for (let i = 0; i < s.length; i++) {
+    const cur = s[i];
+    switch (cur) {
+      case ")":
+        if (arr[arr.length - 1] === "(") {
+          arr.pop();
+        } else return false;
+        break;
+      case "]":
+        if (arr[arr.length - 1] === "[") {
+          arr.pop();
+        } else return false;
+        break;
+      case "}":
+        if (arr[arr.length - 1] === "{") {
+          arr.pop();
+        } else return false;
+        break;
+      default:
+        arr.push(cur);
+    }
+  }
+
+  return arr.length === 0 ? true : false;
+};
 
 /*
 
