@@ -17,9 +17,15 @@ MinStack.prototype.push = function (val) {
   console.log(this.storage);
 
   const arr = this.minArr;
-  if (!arr || val < arr[arr.length - 1]) {
+  //now check if our val is smaller than the end of the array
+  if (arr.length === 0) {
     arr.push(val);
+    console.log(arr);
+    return;
   }
+  console.log(arr);
+  //We only want to push into the minarr when we have a value smaller than what's present at the end.
+  return arr[arr.length - 1] >= val ? arr.push(val) : arr;
 };
 
 /**
@@ -27,15 +33,18 @@ MinStack.prototype.push = function (val) {
  */
 MinStack.prototype.pop = function () {
   //base case
-  console.log("hello");
+  // console.log("pop");
+  const arr = this.minArr;
   if (this.length === 0) return "empty map";
-  // console.log(this.storage)
+
+  const grab = this.storage.get(this.length-1);
   this.storage.delete(this.length - 1);
-  //   console.log(this.storage)
   this.length--;
 
-  const arr = this.minArr;
-  if (!this.storage.has(arr[arr.length - 1])) {
+  // console.log(grab, 'grab');
+
+  if (grab === arr[arr.length - 1]) {
+    // console.log(this.storage.get(1), 'arrcheck')
     arr.pop();
   }
   return;
@@ -45,8 +54,10 @@ MinStack.prototype.pop = function () {
  * @return {number}
  */
 MinStack.prototype.top = function () {
-  const first = this.storage.get(0);
-  if (!first) return "empty stack";
+  const first = this.storage.get(this.length - 1);
+  console.log(first);
+  if (first === undefined) return "empty stack";
+  console.log("test");
   return first;
 };
 
@@ -55,15 +66,34 @@ MinStack.prototype.top = function () {
  */
 MinStack.prototype.getMin = function () {
   //That should be the smallest value
-  return this.minArr[this.minArr.length - 1];
+  const smallest = this.minArr[this.minArr.length-1];
+  return smallest;
 };
 
-const test = new MinStack();
-test.push(-2);
-test.push(0);
-test.push(-3);
-console.log(test);
-console.log(test.getMin());
+// const test = new MinStack();
+// test.push(-2);
+// test.push(0);
+// test.push(-3);
+// console.log(test);
+// test.getMin();
+// console.log(test.getMin());
+// test.pop();
+// console.log(test);
+// test.top();
+// console.log(test.top());
+// test.getMin();
+// console.log(test.getMin());
+
+const check = new MinStack();
+check.push(-2);
+check.push(0);
+check.push(-1);
+console.log(check);
+
+console.log(check.getMin())
+console.log(check.top());
+check.pop();
+console.log(check);
 
 /**
  * Your MinStack object will be instantiated and called as such:
