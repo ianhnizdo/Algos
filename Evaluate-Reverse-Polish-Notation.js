@@ -11,7 +11,7 @@ var evalRPN = function(tokens) {
             arr.push(Number(el))
         }
         else{
-            console.log(el)
+            // console.log(el)
             const last = arr[arr.length-1];
             const secondLast = arr[arr.length-2];
             arr.pop()
