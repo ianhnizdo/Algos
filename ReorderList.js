@@ -10,41 +10,32 @@
  * @return {void} Do not return anything, modify head in-place instead.
  */
 
-class Node {
-  constructor(val, next) {
-    this.val = val === undefined ? null : next;
-    this.next = next === undefined ? null : next;
-  }
-}
-
 var reorderList4 = function (head) {
   const arr = [];
   let cur = head;
-  while (cur) {
-    arr.push(cur.val);
+  while (cur !== null) {
+    arr.push(cur);
     cur = cur.next;
   }
-  let left = 1;
+  let left = 0;
   let right = arr.length - 1;
-  let node = head;
-  let i = 0;
+  let condition = true;
   while (left < right) {
-    if (i % 2 === 0) {
-      node.next = new Node(arr[right]);
-      right--;
-    } else {
-      node.next = new Node(arr[left]);
+    if (condition) {
+      arr[left].next = arr[right];
       left++;
+      condition = false;
+    } else {
+      arr[right].next = arr[left];
+      right--;
+      condition = true;
     }
-    node = node.next;
-    i += 1;
   }
-  if (left === right) {
-    node.next = new Node(arr[right]);
-  }
+  arr[left].next = null;
 };
 
-function doublyLinked(list) {}
+//[1,2,3,4,], 1->4->2->3->
+//[1,2,3,4,5], 1->5->2->4->3
 
 /*
 
@@ -191,38 +182,67 @@ var reorderList2 = function (head) {
 var reorderList3 = function (head) {
   let s = head;
   let f = head.next;
-  while (f !== null && f.next !== null) {
+  while (f && f.next !== null) {
     s = s.next;
     f = f.next.next;
-    // console.log('firstloop', f.next===null)
   }
 
-  //Now s is at the beginning at the second half of the list
   let second = s.next;
-
-  //Splitting it into two different linked lists
   s.next = null;
-
   let prev = null;
-
+  let stor;
   while (second !== null) {
-    // console.log('test');
-    let copy = second.next;
+    stor = second.next;
     second.next = prev;
     prev = second;
-    second = copy;
+    if (stor === null) break;
+    second = stor;
   }
 
-  // Nowwe merge the two lists.
-  let first = head;
-  let second2 = prev;
-  while (second2) {
-    // console.log('final loop,', second2)
-    let tmp1 = first.next;
-    let tmp2 = second2.next;
-    first.next = second2;
-    second2.next = tmp1;
-    first = tmp1;
-    second2 = tmp2;
+  let left = head;
+  let i = left;
+  let right = second;
+  let j = right;
+  while (left && right) {
+    i = left.next;
+    left.next = right;
+    left = i;
+    j = right.next;
+    right.next = left;
+    right = j;
   }
 };
+
+// while (f !== null && f.next !== null) {
+//   s = s.next;
+//   f = f.next.next;
+//   // console.log('firstloop', f.next===null)
+// }
+
+// //Now s is at the beginning at the second half of the list
+// let second = s.next;
+
+// //Splitting it into two different linked lists
+// s.next = null;
+
+// let prev = null;
+
+// while (second !== null) {
+//   // console.log('test');
+//   let copy = second.next;
+//   second.next = prev;
+//   prev = second;
+//   second = copy;
+// }
+
+// // Nowwe merge the two lists.
+// let first = head;
+// let second2 = prev;
+// while (second2) {
+//   // console.log('final loop,', second2)
+//   let tmp1 = first.next;
+//   let tmp2 = second2.next;
+//   first.next = second2;
+//   second2.next = tmp1;
+//   first = tmp1;
+//   second2 = tmp2;
