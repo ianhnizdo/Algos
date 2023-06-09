@@ -10,6 +10,33 @@
  * @return {void} Do not return anything, modify head in-place instead.
  */
 
+class Node {
+  constructor(val, next) {
+    this.val = val !== undefined ? val : 0;
+    this.next = next !== undefined ? next : null;
+  }
+}
+
+function createList(arr) {
+  let head;
+  let cur;
+  for (const el of arr) {
+    const node = new Node(el);
+    // console.log(node)
+    if (head === undefined) {
+      head = node;
+      cur = node;
+    } else {
+      cur.next = node;
+      cur = cur.next;
+    }
+  }
+
+  return head;
+}
+
+console.log(createList([1, 2, 3, 4]));
+
 var reorderList4 = function (head) {
   const arr = [];
   let cur = head;
@@ -34,98 +61,33 @@ var reorderList4 = function (head) {
   arr[left].next = null;
 };
 
-//[1,2,3,4,], 1->4->2->3->
-//[1,2,3,4,5], 1->5->2->4->3
-
-/*
-
-Step 1. Understand the problem
-
-We have to reorganize the linked list to make the last node be the second, second to last be the fourth, etc
-
-Even and odd will
-
-Step 2. Examples
-
-[1,2,3,4] => [1,4,2,3]
-[1,2,3,4,5] => [1,5,2,4,3]
-
-[1,2,3,4,5,6]=>[1,6,2,5,3,4]
-
-Step 3. Method
-
-This looks like two pointers almost that would work marvelously but I think its a singly linked list.
-
-My initial though is moving a pointer through the linked list to the end and then start at the beginning. The idea would be to move the left and right pointer and update the next values accordingly. During this time I would define a this.prev to make a doubly linked list.
-
-so prev would be null
-then after setting prev in the node update the node to the current value.
-Move up the current value
-
-Now start with the start and end
-Make a current variable
-Storage for next values that need to be saved
-Make a condition set to true initially
-
-do a while loop whose condition is based on whether or not the node value exists in an object we can check against. There is probably a better way.
-
-Basically if we're at the beginning I make the condition true, these are values from the left that have their next value be nodes at the end
-
-Condition true
-Move up start to get the next node
-set cur.next = end
-Move down the end
-cur.next.prev = cur
-cur=cur.next
-set condition false
-
-
-condition false, we are on the right side node and make the next left
-cur.next = start
-Make the next value in cur have its prev updated, cur.next.prev=cur
-
-set condition true
-
-*/
-
 var reorderList = function (head) {
   const arr = [];
 
-  //lets make an array
-  let node = head;
-  let i = 0;
+  let cur = head;
 
-  while (node) {
-    arr.push(node);
-    node = node.next;
-    arr[i].next = null;
-    i += 1;
-  }
-  console.log(arr);
-
-  let l1 = 1;
-  let l2 = arr.length - 1;
-  //   let dummy = head;
-
-  while (l1 < l2) {
-    //     console.log(head);
-    head.next = arr[l2];
-    // console.log(head)
-    l2 -= 1;
-    head = head.next;
-    head.next = arr[l1];
-    l1 += 1;
-    head = head.next;
+  while (cur) {
+    arr.push(cur);
+    cur = cur.next;
   }
 
-  if (l1 === l2) {
-    // console.log('l1 is equal to l2');
-    // console.log(head.next, arr[l1]);
-    head.next = arr[l1];
-    console.log(arr[0]);
+  let left = 0;
+  let right = arr.length - 1;
+  let leftSide = true;
+  while (left < right) {
+    console.log(left, right);
+    if (leftSide) {
+      arr[left].next = arr[right];
+      left++;
+      leftSide = false;
+    } else {
+      arr[right].next = arr[left];
+      right--;
+      leftSide = true;
+    }
   }
 
-  // console.log('jead and l1,', arr[0], l1);
+  if (left === right) arr[right].next = null;
 
   return;
 };
@@ -182,67 +144,49 @@ var reorderList2 = function (head) {
 var reorderList3 = function (head) {
   let s = head;
   let f = head.next;
-  while (f && f.next !== null) {
+  while (f && f.next) {
     s = s.next;
     f = f.next.next;
   }
 
-  let second = s.next;
+  let cur = s.next;
   s.next = null;
   let prev = null;
-  let stor;
-  while (second !== null) {
-    stor = second.next;
-    second.next = prev;
-    prev = second;
-    if (stor === null) break;
-    second = stor;
+  while (cur) {
+    let store = cur.next;
+    cur.next = prev;
+    prev = cur;
+    if (!store) break;
+    cur = store;
   }
 
-  let left = head;
-  let i = left;
-  let right = second;
-  let j = right;
-  while (left && right) {
-    i = left.next;
-    left.next = right;
-    left = i;
-    j = right.next;
-    right.next = left;
-    right = j;
+  let pres = head;
+
+  let edge = cur;
+  // console.log(edge);
+  let condition = true;
+  while (edge && pres) {
+    let storage;
+    if (condition) {
+      storage = pres.next;
+      pres.next = edge;
+      condition = false;
+      pres = storage;
+    } else {
+      storage = edge.next;
+      edge.next = pres;
+      edge = storage;
+      condition = true;
+    }
   }
+  // console.log(pres,edge)
+  return head;
 };
 
-// while (f !== null && f.next !== null) {
-//   s = s.next;
-//   f = f.next.next;
-//   // console.log('firstloop', f.next===null)
-// }
+const list1 = createList([1, 2, 3, 4]);
+const list2 = createList([1, 2, 3, 4, 5]);
 
-// //Now s is at the beginning at the second half of the list
-// let second = s.next;
-
-// //Splitting it into two different linked lists
-// s.next = null;
-
-// let prev = null;
-
-// while (second !== null) {
-//   // console.log('test');
-//   let copy = second.next;
-//   second.next = prev;
-//   prev = second;
-//   second = copy;
-// }
-
-// // Nowwe merge the two lists.
-// let first = head;
-// let second2 = prev;
-// while (second2) {
-//   // console.log('final loop,', second2)
-//   let tmp1 = first.next;
-//   let tmp2 = second2.next;
-//   first.next = second2;
-//   second2.next = tmp1;
-//   first = tmp1;
-//   second2 = tmp2;
+const rearrange = reorderList3(list1);
+// console.log(rearrange);
+const r2 = reorderList3(list2);
+// console.log(r2);
