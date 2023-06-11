@@ -37,88 +37,60 @@ fast pointer: 4->3->2->4->
 In both cases if we return the next value after the match 4 is 2, an 2 to 3 it gives us the repeating number
 */
 
-var findDuplicate = function (nums) {
-  //Make a slow and fast pointer
+var findDuplicate3 = function (nums) {
   let slow = 0,
     fast = 0;
-
   while (true) {
-    slow = nums[slow];
     fast = nums[nums[fast]];
+    slow = nums[slow];
+    // console.log(slow, fast);
     if (slow == fast) break;
   }
-
+  console.log(slow);
   let slow2 = 0;
-  while (slow2 !== slow) {
-    slow2 = nums[slow2];
+  while (slow !== slow2) {
     slow = nums[slow];
+    slow2 = nums[slow2];
   }
-  return slow;
+  return slow2;
 };
 
-console.log(findDuplicate([1, 3, 4, 2, 2]));
+console.log(findDuplicate3([1, 3, 4, 2, 2]));
+//slow 1-3->2->4->2->4->2
+//fast 3->4->4->4
+
+//slow  4->2->4->2
+//slow2 0->1->3->2
+//Okay we have now found 4
 //
-console.log(findDuplicate([3, 1, 4, 1, 2]));
+console.log(findDuplicate3([3, 1, 4, 1, 2]));
 /*
-Step 1. Understand the problem
+slow 0->3->1->1->
+fast 0->1->1->1
 
-Input: an array of integers nums containing n+1 integers where each number is in the rAnge of [1,n]
-
-So nothing less than -1
-
-There is only one repeated number.
-
-Our goal si to find the extra number
-
-
-Step 2. Examples
-
-[1,3,4,2,2]-> 2 is the repeated number
-
-Step 3. Method
-
-The easiest method would be to make a map or object to keep track of all the values. Set the key as the integer and value as the number of times it appears.
-
-If it has a value greater than 1 then we have found our answer.
-
-However we are told to solve this with constant memory
-
-What method could we use
-Tortoise and hare (no)
-Two pointers, what would we point at
-Sliding window (intriguing but how)
-recursion
-binary search
-stacks
-queues
-linkedList
-
-We could also sort the array and just use two poitners to find out if the previous value equalis the current but that does increase memory usage
-
-This is a linkedList problem
+slow2 0->3->1
+slow 1->1->1
 
 */
 
-// var findDuplicate1 = function(nums) {
-//     const map = new Map()
+var findDuplicate1 = function (nums) {
+  const map = new Map();
 
-//     for(let i=0; i<nums.length; i++){
-//         const cur = nums[i];
+  for (let i = 0; i < nums.length; i++) {
+    const cur = nums[i];
 
-//         if(map.has(cur)) {
-//             return map.get(cur);
-//             }
-//           map.set(cur, cur);
-//     }
-//   }
+    if (map.has(cur)) {
+      return map.get(cur);
+    }
+    map.set(cur, cur);
+  }
+};
 
-// var findDuplicate2 = function(nums) {
-
-//     for(let i=0; i<nums.length; i++){
-//         const cur = nums[i];
-//         for(let j=i+1;j<nums.length; j++){
-//             if(nums[j]===cur) return nums[j]
-//         }
-//     }
-
-// }
+var findDuplicate2 = function (nums) {
+  for (let i = 0; i < nums.length; i++) {
+    const cur = nums[i];
+    for (let j = i + 1; j < nums.length; j++) {
+      if (nums[j] === cur) return nums[j];
+    }
+  }
+};
