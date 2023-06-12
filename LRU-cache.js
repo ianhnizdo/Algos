@@ -1,97 +1,87 @@
- /**
+/**
  * @param {number} capacity
  */
+class LRUCache {
+  constructor(capacity) {
+    this.map = new Map();
+    this.size = capacity;
 
- class Node{
-    constructor(key, value){
-        this.key=key;
-        this.val=value;
-        this.next=this.prev=null;
+    this.head = {};
+    this.tail = {};
+
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+
+  put(key, val) {
+    const present = this.map.has(key);
+    if (present) {
+      const value = this.map.get(key);
+      value.val = val;
+      this.update(value);
+      return;
     }
+    if (this.map.size == this.size) {
+      const least = this.head.next;
+      console.log("max size", key, least.key);
+      //max capacity reached
+      this.cutDown();
+      this.map.delete(least.key);
+    }
+
+    const node = { key: key, val: val };
+    this.recent(node);
+
+    this.map.set(key, node);
+  }
+
+  recent(node) {
+    this.tail.prev.next = node;
+    node.prev = this.tail.prev;
+    node.next = this.tail;
+    this.tail.prev = node;
+  }
+
+  update(node) {
+    // node.val = val;
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+    this.recent(node);
+  }
+
+  cutDown() {
+    const [head, leastUsed, almostleastUsed] = [
+      this.head,
+      this.head.next,
+      this.head.next.next,
+    ];
+    head.next = almostleastUsed;
+    almostleastUsed.prev = head;
+  }
+
+  get(key) {
+    const present = this.map.has(key);
+
+    if (!present) return -1;
+
+    const node = this.map.get(key);
+    this.update(node);
+
+    return node.val;
+  }
 }
 
-var LRUCache = function(capacity) {
-    this.cap = capacity;
-    this.cache = new Map()
-    this.last = null
-    this.first = null
-    
-    // this.first.next=this.first.prev=this.last
-    // this.last.next=this.last.prev=this.first
-};
+const test = new LRUCache(3);
+console.log(test.map);
 
-/** 
- * @param {number} key
- * @return {number}
- */
-LRUCache.prototype.get = function(key) {
-    if(this.cache.has(key)){
-        const data = (this.cache.get(key));
-        this.remove(data);
-        // this.cache.delete(key);
-        this.insert(data);
-        // this.cache.set(key, data);
-        // console.log(this.cache)
-        return data.val;
-    }
-    return -1;
-};
-
-LRUCache.prototype.remove = function(node){
-    if(this.first===null)return;
-    if(this.first===node){
-        this.first=this.first.next;
-        this.first.prev=this.last;
-        this.last.next=this.first;
-        }else{
-            node.prev.next=node.next;
-            node.next.prev=node.prev;
-        }
-    
-    this.cache.delete(node.key)
-
-}
-
-LRUCache.prototype.insert = function(node){
-    if(this.first===null && this.last===null){
-        node.next=node;
-        node.prev=node;
-        this.first=node;
-        this.last=node;
-    }else{
-        this.last.next=node;
-        node.prev=this.last;
-        this.last=this.last.next;
-        node.next=this.first;
-        this.first.prev=this.last;
-    }
-    
-    this.cache.set(node.key, node);
-    
-};
-
-/** 
- * @param {number} key 
- * @param {number} value
- * @return {void}
- */
-LRUCache.prototype.put = function(key, value) {
-    //This is when we need to do some resets
-    if(this.cache.has(key)){
-        console.log('present');
-        this.remove(this.cache.get(key))
-    }
-    
-    const node = new Node(key, value);
-    this.insert(node);
-
-    if(this.cache.size>this.cap){
-        //remove this.first from the lst
-        // const lru = this.first.next;
-        // this.remove(lru);
-        this.remove(this.first);
-    }
-
-    console.log(this.cache);
-    
-};
+test.put("4", 4);
+console.log(test);
+console.log(test.get("4"));
+test.put("3", 1);
+test.put("2", 2);
+test.put("5", 5);
+console.log(test.get("4"));
+console.log(test.get("5"));
+test.get("3");
+test.put("8", 8);
+console.log(test.get("2"));
