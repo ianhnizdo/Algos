@@ -6,70 +6,118 @@ var carFleet = function (target, position, speed) {
   // console.log(sorted);
 
   const stack = [];
-// console.log(sorted);
+  // console.log(sorted);
   for (let j = sorted.length - 1; j > -1; j--) {
-    stack.push((target-sorted[j][0])/sorted[j][1])
+    stack.push((target - sorted[j][0]) / sorted[j][1]);
     // console.log(stack)
-    if(stack.length>=2 && stack[stack.length-1]<=stack[stack.length-2]){
-      stack.pop()
+    if (
+      stack.length >= 2 &&
+      stack[stack.length - 1] <= stack[stack.length - 2]
+    ) {
+      stack.pop();
     }
   }
   // console.log(stack)
   return stack.length;
 };
 
-console.log(carFleet(12, [10,8,0,5,3],[2,4,1,1,3]))
-// console.log(carFleet)
+console.log(carFleet(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]));
 
-// console.log(
-//   carFleet(
-//     31,
-//     [5, 26, 18, 25, 29, 21, 22, 12, 19, 6],
-//     [7, 6, 6, 4, 3, 4, 9, 7, 6, 4]
-//   )
-// );
+var carFleet2 = function (target, position, speed) {
+  const map = new Map();
 
-// var carFleet = function (target, position, speed) {
-//   const sorted = position
-//     .map((el, i) => [el, speed[i]])
-//     .sort((a, b) => a[0] - b[0]);
+  for (let i = 0; i < position.length; i++) {
+    map.set(position[i], speed[i]);
+  }
 
-//   //Now we have the sorted array with the furthest car in front with its correspondding position.
+  const arr = Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
 
-//   const times = Array.from(sorted, (x, i) => (target - x[0]) / x[1]);
+  console.log(arr);
 
-//   const stack = [];
-//   let hold;
-//   console.log(times);
-//   if (times.length >= 2) {
-//     for (let j = times.length - 1; j >= 0; j--) {
-//       const last = times[j];
-//       const second = times[j - 1];
-//       // console.log(last, second);
-//       if(hold && last>hold){
-//         stack.push(hold);
-//         hold=undefined;
-//       }
-//       if(second<=last && !hold){
-//         hold=last;
-//       }
-//       else {
-//        stack.push(last);
-//        // console.log(stack);
-//      }
+  const stack = [];
 
-//       // if (second <= last || hold) {
-//       //   if (hold && second > hold) {
-//       //     stack.push(hold);
-//       //     // console.log(stack)
-//       //     hold = undefined;
-//       //   }
-//       //   hold = last;
-//       //   // console.log(second, hold);
-//       // }
-//     }
-//   } else return 1;
-//   console.log(stack);
-//   return stack.length;
-// };
+  for (let i = 0; i < arr.length - 1; i++) {
+    let pos = arr[i][0];
+  }
 
+  return stack.length;
+};
+
+console.log(carFleet(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]));
+
+var carFleet3 = function (target, position, speed) {
+  let fleets = 0;
+  const map = new Map();
+
+  for (let i = 0; i < position.length; i++) {
+    map.set(position[i], speed[i]);
+  }
+
+  const arr = Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
+
+  //we now have it sorted, what can happen now is we use a while loop on this until the array is empty
+  while (arr.length > 0) {
+    let hit = 0;
+    //Firstly we need to probably make a loop from beginning to end to update the positions
+    //If any position is greater than the vehicle in front then we adjust the speed to that vehicle should it exist
+    //Then if we make it to the target or greater we begin the pop procedure, all the vehicles in front should be just one fleet
+    for (let i = arr.length - 1; i >= 0; i--) {
+      const cur = arr[i];
+      const next = i === arr.length - 1 ? null : arr[i + 1];
+      //   // console.log(cur, next)
+
+      cur[0] += cur[1];
+      if (next && cur[0] >= next[0]) {
+        cur[0] = next[0];
+        cur[1] = next[1];
+      }
+    }
+    let prev;
+    while (arr.length > 0 && arr[arr.length - 1][0] >= target) {
+      const pop = arr[arr.length - 1][0];
+      arr.pop();
+      if (pop !== prev) {
+        hit += 1;
+      }
+      prev = pop;
+    }
+    fleets += hit;
+  }
+
+  return fleets;
+};
+
+// console.log('hi')
+console.log(carFleet3(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]));
+console.log(carFleet3(10, [8, 3, 7, 4, 6, 5], [4, 4, 4, 4, 4, 4]));
+
+/*
+    while(arr[arr.length-1] !=='-'){
+        //This will keep track of how many fleets hit the target. Never be greater than 1.
+        let hit = 0;
+
+        for(let i = 0; i<arr.length; i++){
+            const cur = arr[i];
+            const prev = i===0 ? null : arr[i-1];
+
+            //update the position
+            cur[0]=cur[0]+cur[1];
+
+            //This is should one car catch up or exceed another. They need to match
+            if(prev && prev !=='-' && cur[0]>=prev[0]){
+                //update the position to previous
+                cur[0]=prev[0]
+                //update the speed to previous
+                cur[1]=prev[1]
+            }
+
+            if(cur[0]>=target){
+                hit= hit>1 ? hit : 1;
+
+                fleets+=hit;
+            }
+
+        }
+    }
+
+*/
