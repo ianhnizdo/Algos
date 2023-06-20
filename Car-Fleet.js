@@ -24,26 +24,25 @@ var carFleet = function (target, position, speed) {
 console.log(carFleet(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]));
 
 var carFleet2 = function (target, position, speed) {
-  const map = new Map();
+  const times = position
+    .map((el, i) => [el, speed[i]])
+    .sort((a, b) => a[0] - b[0])
+    .map((el, i) => (target - el[0]) / el[1]);
+  console.log(times);
 
-  for (let i = 0; i < position.length; i++) {
-    map.set(position[i], speed[i]);
+  let stack = [];
+
+  for (const coord of times) {
+    const prev = () => stack[stack.length - 1] <= coord;
+    while (stack.length && prev()) stack.pop();
+    stack.push(coord);
   }
-
-  const arr = Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
-
-  console.log(arr);
-
-  const stack = [];
-
-  for (let i = 0; i < arr.length - 1; i++) {
-    let pos = arr[i][0];
-  }
-
   return stack.length;
 };
 
-console.log(carFleet(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]));
+const checker = function (coordinate, stack) {};
+
+console.log(carFleet2(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]));
 
 var carFleet3 = function (target, position, speed) {
   let fleets = 0;
