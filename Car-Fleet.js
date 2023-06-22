@@ -1,23 +1,17 @@
 var carFleet = function (target, position, speed) {
   const sorted = position
     .map((el, i) => [el, speed[i]])
-    .sort((a, b) => a[0] - b[0]);
+    .sort((a, b) => a[0] - b[0])
+    .map((el, i) => (target - el[0]) / el[1]);
+  console.log(sorted);
 
-  // console.log(sorted);
+  let stack = [];
 
-  const stack = [];
-  // console.log(sorted);
-  for (let j = sorted.length - 1; j > -1; j--) {
-    stack.push((target - sorted[j][0]) / sorted[j][1]);
-    // console.log(stack)
-    if (
-      stack.length >= 2 &&
-      stack[stack.length - 1] <= stack[stack.length - 2]
-    ) {
+  for (let i = sorted.length - 1; i >= 0; i--) {
+    stack.push(sorted[i]);
+    if (stack.length >= 2 && stack[stack.length - 1] <= stack[stack.length - 2])
       stack.pop();
-    }
   }
-  // console.log(stack)
   return stack.length;
 };
 

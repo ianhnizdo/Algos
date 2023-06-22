@@ -41,42 +41,70 @@ var dailyTemperatures = function (temperatures) {
 // console.log(dailyTemperatures([30, 60, 90]));
 console.log(dailyTemperatures([89, 62, 70, 58, 47, 47, 46, 76, 100, 70]));
 
+const dailyTemperatures2 = function (temperatures) {
+  const ans = new Array(temperatures.length).fill(0);
+  // console.log(ans);
+
+  for (let i = 0; i < temperatures.length; i++) {
+    let cur = temperatures[i];
+    let prev = temperatures[i - 1];
+    // console.log(cur>prev);
+    if (cur > prev) {
+      // console.log(cur, prev);
+      let j = i - 1;
+      // console.log(j);
+      while (j >= 0) {
+        // console.log(cur, temperatures[j]);
+        const back = ans[j];
+        if (cur <= back) break;
+        // console.log(cur, temperatures[i])
+        if (back === 0 && temperatures[i] > temperatures[j]) {
+          ans[j] = i - j;
+          // console.log(temperatures[j], ans[j], temperatures[i], cur>back);
+        }
+        j--;
+      }
+    }
+  }
+
+  return ans;
+};
+
+console.log(dailyTemperatures2([73, 74, 75, 71, 69, 72, 76, 73]));
 /*
 
 Step 1. Understand the Problem
 
-We are given an array of integers.
-
-Our goal is to find out for each integer how many spots must we got to the right until we find a larger integer.
-
-Then put that number into an answer array.
-If there are no larger numbers put 0 into the answer array.
-
-We cannot change the order of our array
+You are given an array of integers temperatures that represents the daily temperatures. Our goal is to return an array answer that tells us how long we have to wait until we reach a warmer temperature.
 
 Step 2. Examples
 
-[73,74,75,71,69,72,76,73]->[1,1,4,2,1,1,0,0]
+[73,74,75,71,69,72,76,73]
+output is [1,1,4,2,1,1,0,0]
 
 Step 3. Method
 
 Brute force
 
-Loop through the array and for every entry make another loop to find out when we find a larger number. The time complexity at worst would be O(n^2)
+Loop through array and for every integer being looping from its spot forward until you find a number larger than itelf.
+Time Complexity O(n^2)
 
-We would of course have an answer array where we would push the number of spots until we hit a larger number from our current index in the array or 0 if there are no larger numbers.
+Not good
 
-What is a better way to do this?
+Alternate approach
 
 1. Two pointers
 2. Sliding window
-3. Recursion
-4. Heaps
-5. Hashmap
-6. Stack
-
-Why would a stack be useful here? Stacks are great for linearly moving through the array. Stacks are useful if your trying to keep up the information as your moving through.
+3. Stacks
+4. Queues
+5. Linked List
+6. Binary Search
 
 
+We will probably need to create an array
+
+Basically loop forward until you find a number that is greater than the previous
+
+At that point loop backward subtracting your current number minus the previous until you either hit a value in our array that already has found a larger number, hit the beginning of ouor answer array, or find a value that has already found a larger number closer than the one we are currently examining.
 
 */
